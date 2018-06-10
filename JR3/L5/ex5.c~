@@ -1,0 +1,109 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef char elementtype;
+typedef struct node* list;
+
+struct node {
+  elementtype element;
+  struct node *next;
+};
+
+void insert(list l, elementtype e) {
+  struct node *n = (struct node*)malloc(sizeof(struct node));
+  n->element = e;
+  n->next = l->next;
+  l->next = n;
+  return;
+}
+
+/*
+void delete(list l) {
+  if(l->next != NULL){
+    list del;
+    del = l->next;
+    l->next = l->next->next;
+    free(del);
+  }
+}
+*/
+
+//()を探して中身をlist smallに入れる
+void search_small(list l, list small) {
+  while(l != NULL){
+    if(l->next->element == '('){
+      list a;
+      a = l;
+      l = l->next;
+      while(l->next->element == ')'){
+	small->element = l->next->element;
+	small = small->next;
+	l = l->next;
+      }
+      //)の次のリストにl
+      l=l->next->next;
+      a->next = l;
+    }
+  }
+}
+
+void search_big(list l, list big) {
+  while(l != NULL){
+    if(l->next->element == '['){
+      list a;
+      a = l;
+      l = l->next;
+      while(l->next->element == ']'){
+        big->element = l->next->element;
+        big = big->next;
+        l = l->next;
+      }
+      //)の次のリストにl
+      l=l->next->next;
+      a->next = l;
+    }
+  }
+}
+
+void print_char_list(list l) {
+  list cur = l->next;
+  while(cur != NULL) {
+    printf("%c", cur->element);
+    cur = cur->next;
+  }
+  printf("\n");
+}
+
+
+int main() {
+  int i;
+  char c, buf[128];
+  list l, small, big;
+  l = (struct node*)malloc(sizeof(struct node));
+  small = (struct node*)malloc(sizeof(struct node));
+  big = (struct node*)malloc(sizeof(struct node));
+
+  list head = l;
+
+  //lに順番に入れる
+  fgets(buf, sizeof(buf), stdin);
+  for(i=0; (c = buf[i]) != '\n'; ++i) {
+    insert(l, c);
+    l = l->next;
+  }
+  
+  l = head;
+  list big_h = big;
+  list small_h = small;
+
+  search_small(l, small);
+  l=head;
+  search_big(l, big);
+  
+  small->next = head;
+  l->next = big_h;
+  
+  print_char_list(small_h);
+  
+  return 0;
+}

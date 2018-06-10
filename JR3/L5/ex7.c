@@ -1,0 +1,89 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef int elementtype;
+
+struct dlnode {
+  elementtype element;
+  struct dlnode *prev, *next;
+};
+
+void insert(struct dlnode *p, elementtype e) {
+  struct dlnode *n = (struct dlnode*) malloc(sizeof(struct dlnode));
+  n->element = e;
+  n->prev = p->prev;
+  n->next = p;
+  p->prev->next = n;
+  p->prev = n;
+  return;
+}
+
+void delete(struct dlnode *p) {
+  if(p->prev != p) p->prev->next = p->next;
+  if(p->next != p) p->next->prev = p->prev;
+  free(p);
+  return;
+}
+
+void print_dllist(struct dlnode *d) {
+  struct dlnode *top = d;
+  while(d->next != top) {
+    d = d->next;
+    printf("[%d]", d->element);
+  }
+  while(d != top) {
+    printf("{%d}", d->element);
+    d = d->prev;
+  }
+
+  printf("\n");
+  return;
+}
+
+void append_dllist(struct dlnode *d1, struct dlnode *d2) {
+  d1->prev->next = d2->next;
+  d2->next->prev = d1->prev;
+  d1->prev = d2->prev;
+  d2->prev->next = d1;
+  free(d2);
+  return;
+}
+
+int main() {
+  char buf[128];
+  int i;
+  struct dlnode *d1, *d2;
+
+  d1 = (struct dlnode*) malloc(sizeof(struct dlnode));
+  d2 = (struct dlnode*) malloc(sizeof(struct dlnode));
+  //d1, d2は空                                                                        
+  d1->prev = d1; d1->next = d1;
+  d2->prev = d2; d2->next = d2;
+
+  while(fgets(buf, sizeof(buf), stdin) != NULL) {
+    sscanf(buf, "%d", &i);
+    insert(d1, i);
+    insert(d2, i);
+  }
+
+  print_dllist(d1);
+  print_dllist(d2);
+
+  d1 = d1->next; d2 = d2->next;
+  while(d1->next->element == d2->next->element) {
+    d1 = d1->next; d2 = d2->next;
+    if(d1->prev->element % 2 == 1 || d1->prev->element % 2 == -1){
+      delete(d1->prev);
+    } else {
+      delete(d2->prev);
+    }
+  }
+
+  print_dllist(d1);
+  print_dllist(d2);
+
+  append_dllist(d1, d2);
+  print_dllist(d1);
+
+  return 0;
+}

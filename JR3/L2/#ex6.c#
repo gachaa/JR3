@@ -1,0 +1,40 @@
+#include<stdio.h>
+#include<string.h>
+
+#define MAXLEN 128
+char buf[MAXLEN+2];
+
+int main(void){
+  char *p;
+  int n;
+
+  //fgetsでbufに一行文の文字列を保存
+  while( fgets(buf, sizeof(buf), stdin) != NULL ){
+    
+    //bufに//があれば、その位置をp(ポインタ)に入れる、なければNULLを返す
+    p = strchr(buf, '//');
+    
+    /*
+    if(p != NULL){
+      //bufに//があったとき
+      printf("%d\n", p-buf)
+    }else{
+      n = length(buf);
+    }
+    */
+    
+  }
+
+  if(p != NULL){
+    printf("%d\n", p - buf);
+  }else{
+    printf("みつかってない\n")
+  }
+}
+
+int length(char *s){
+  int count = 0;
+  while(*s++)count++;
+
+  return count;
+}

@@ -1,0 +1,71 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef int elementtype;
+typedef struct node* list;
+
+struct node {
+  elementtype element;
+  struct node *next;
+};
+
+void insert(list l, elementtype e) {
+  struct node *n = (struct node*)malloc(sizeof(struct node));
+  n->element = e;
+  n->next = l->next;
+  l->next = n;
+  return;
+}
+
+void print_all(list l) {
+  list head = l;
+
+  printf("[%d]", l->element);
+  l = l->next;
+  while(l != head){
+    printf("[%d]", l->element);
+    l = l->next;
+  }
+  printf("\n");
+  return;
+}
+
+int main() {
+  int x;
+  char buf[128];
+  list l;
+  l = (struct node*)malloc(sizeof(struct node));
+  //循環
+  l->next = l;
+  list head = l;
+
+  int firstCheck = 1;
+  //buf[i]をリストlの末尾に足してく
+  while(fgets(buf, sizeof(buf), stdin) != NULL) {
+    sscanf(buf, "%d", &x);
+    if(firstCheck) {
+      l->element = x;
+      firstCheck = 0;
+    } else {
+      insert(l, x);
+      l = l->next;
+    }
+  }
+  l = head;
+  
+  int max = -10000;
+  list maxL;
+
+  while(1){
+    if(max <= l->element){
+      max = l->element;
+      maxL = l;
+    }
+    l = l->next;
+    if(l == head) break;
+  }
+
+  print_all(maxL);
+
+  return 0;
+}

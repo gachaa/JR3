@@ -1,0 +1,8 @@
+#include<stdio.h>
+
+int main(){
+  char moji;
+  scanf("%c", &moji);
+  printf("%c", moji);
+  return 0;
+}

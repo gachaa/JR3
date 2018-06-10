@@ -1,0 +1,38 @@
+#include<stdio.h>
+#include<stdlib.h>
+char buf[128]; 
+
+struct student { int id; char name[32]; int score; };
+typedef struct student datatype; 
+struct node { datatype data; struct node *left, *right; };
+
+//行きがけ順で表現された文字列を二分木に変換
+struct node* get_tree() {
+  struct node *t;
+  if(fgets(buf,sizeof(buf),stdin)==NULL || buf[0]=='.')
+    return NULL;
+  else {
+    t = (struct node*)malloc(sizeof(struct node));
+    sscanf(buf,"%d,%[^,],%d",&t->data.id,t->data.name,&t->data.score);
+    t->left = get_tree();
+    t->right = get_tree();
+    return t;
+  }
+}
+
+//学籍番号がidと一致する学生の名前と成績を
+//カンマで区切った文字列を出力
+void find_info(struct node *t, int id) {
+  if(t == NULL) printf("Not found.\n");
+  else if(id == t->data.id) printf("%s,%d\n", t->data.name, t->data.score);
+  else if(id > t->data.id) find_info(t->right, id);
+  else find_info(t->left, id);
+}
+
+int main() {
+  int id;
+  struct node *t = get_tree();
+  scanf("%d␣", &id);
+  find_info(t,id);
+  return 0;
+}
